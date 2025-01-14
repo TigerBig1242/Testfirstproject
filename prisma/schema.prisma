@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int           @id @default(autoincrement())
+  username        String        @unique
+  email           String        @unique
+  password        String
+  first_name      String
+  last_name       String
+  image           String?
+  role_id         Int
+  birthday        DateTime 
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt 
+  role            Roles         @relation(fields: [role_id], references: [id])
+  carts           Carts?
+  orders          Orders[]
+
+  @@map("user")
+}
+
+model Roles {
+  id               Int          @id @default(autoincrement())
+  role_name        String       @unique
+  description      String?
+  users            User[]
+
+  @@map("roles")
+}
+
+// Add Cart System Database
+model Products {
+  id              Int           @id @default(autoincrement())
+  product_name    String        @unique
+  description     String
+  price           Float
+  stock_quantity  Int
+  image           String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt 
+  cart_items      CartItems[]
+  order_items     OrderItems[]
+
+  @@map("products")
+}
+
+model Carts {
+  id              Int           @id @default(autoincrement())
+  user_id         Int           @unique  
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt   
+  users           User          @relation(fields: [user_id], references: [id])  
+  cart_items      CartItems[]
+
+  @@map("carts")
+}
+
+model CartItems {
+  id              Int           @id @default(autoincrement())
+  cart_id         Int
+  product_id      Int
+  quantity        Int
+  price           Decimal       @db.Decimal(10, 2)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt 
+  carts           Carts         @relation(fields: [cart_id], references: [id])
+  products        Products      @relation(fields: [product_id], references: [id])
+
+  @@map("cart_items")
+}
+
+model Orders {
+  id              Int           @id @default(autoincrement())
+  user_id         Int
+  total_price     Decimal       @db.Decimal(10, 2)
+  status          String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt 
+  users           User          @relation(fields: [user_id], references: [id])
+  order_items     OrderItems[]
+
+  @@map("orders")
+}
+
+model OrderItems {
+  id              Int           @id @default(autoincrement())
+  order_id        Int
+  product_id      Int
+  quantity        Int
+  price           Decimal       @db.Decimal(10, 2)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt 
+  orders          Orders        @relation(fields: [order_id], references: [id])
+  products        Products      @relation(fields: [product_id], references: [id])
+
+  @@map("order_items")
+}
+
+enum OrderStatus {
+  Pending
+  Paid
+  Shipped
+  Completed
+  Cancelled
+}
