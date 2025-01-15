@@ -1,3 +1,7 @@
+This is project prepare to get new work is into developer or software engineer. This is the start my journey, wish it will good for me 
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
