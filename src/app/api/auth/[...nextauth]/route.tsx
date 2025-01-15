@@ -62,6 +62,7 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     adapter: PrismaAdapter(prisma),
+    secret: process.env.NEXTAUTH_SECRET,
     session: {
         strategy: "jwt",
     },
@@ -87,7 +88,6 @@ export const authOptions: NextAuthOptions = {
             return session;
         }
     },
-    secret: process.env.NEXTAUTH_SECRET,
 }
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }

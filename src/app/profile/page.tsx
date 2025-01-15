@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession, signOut, getSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -8,12 +8,12 @@ export default function Profile() {
     const { data: session, status} = useSession(); 
     const router = useRouter();
 
-    const protectedPage = async () => {
-        const get_session = await getSession();
-        console.log(get_session);
-    }
+    // const protectedPage = async () => {
+    //     const get_session = await getSession();
+    //     console.log(get_session);
+    // }
 
-    protectedPage();
+    // protectedPage();
     
     useEffect(() => {
         if(status === 'unauthenticated') {
